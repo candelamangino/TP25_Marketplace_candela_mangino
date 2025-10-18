@@ -13,17 +13,43 @@ export default function DashboardPage() {
     }
 
     switch (user.role) {
-      case 'SOLICITANTE':
-        return (
-          <div style={{ padding: '20px', border: '1px solid blue' }}>
-            <h3>Bienvenido, {user.name} (Solicitante)</h3>
-            <p>Aquí publicarás nuevos servicios y compararás cotizaciones.</p>
-            {/* Aquí irán los links para Publicar Servicio */}
-            <Link to='/servicios/nuevo'style={{ display: 'inline-block', padding: '10px', background: 'blue', color: 'white', textDecoration: 'none', marginTop: '10px', borderRadius: '5px' }}>
-                +Publicar Nuevo Servicio
-            </Link>
-          </div>
-        );
+        case 'SOLICITANTE':
+            // 1. Filtramos: Solo servicios donde el autor es el usuario logueado.
+            const myPublishedServices = services.filter(service => service.authorId === user.id);
+        
+            return (
+              <div style={{ padding: '20px', border: '1px solid blue' }}>
+                <h3>Bienvenido, {user.name} (Solicitante)</h3>
+                <p>Aquí publicarás nuevos servicios y compararás cotizaciones.</p>
+                
+                <Link to="/servicios/nuevo" style={{ display: 'inline-block', padding: '10px', background: 'blue', color: 'white', textDecoration: 'none', marginTop: '10px', borderRadius: '5px', marginBottom: '20px' }}>
+                    + Publicar Nuevo Servicio
+                </Link>
+                
+                <hr/>
+                <h4>Tus Publicaciones ({myPublishedServices.length})</h4>
+        
+                {/* 2. Lógica de listado: ¿Hay servicios? */}
+                {myPublishedServices.length === 0 ? (
+                  <p style={{ marginTop: '15px', color: '#555' }}>Aún no has publicado ningún servicio.</p>
+                ) : (
+                  <div style={{ display: 'grid', gap: '15px', marginTop: '15px' }}>
+                    {/* Iteramos sobre la lista FILTRADA */}
+                    {myPublishedServices.map(service => (
+                      <div key={service.id} style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
+                        <h4>{service.title}</h4>
+                        <p>Descripción: {service.description.substring(0, 50)}...</p>
+                        <p>Estado: **{service.status}**</p>
+                        {/* Aquí iría el link para ver el comparador de cotizaciones */}
+                        <Link to={`/cotizar/${service.id}`} style={{ color: 'blue', fontWeight: 'bold' }}>
+                            Ver Cotizaciones &gt;
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
       case 'PROVEEDOR_SERVICIO':
         return (
             <div style={{ padding: '20px', border: '1px solid green' }}>
