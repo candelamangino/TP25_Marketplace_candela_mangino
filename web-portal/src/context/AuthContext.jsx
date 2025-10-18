@@ -1,7 +1,7 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useReducer } from 'react';
 import { findUser } from '../data/users'; // Importamos la función que creaste
-
+//Reducer en React (usando useReducer) es una función que toma dos argumentos para decidir cómo actualizar el estado:
 // 1. Definición del Contexto
 const AuthContext = createContext();
 
@@ -47,10 +47,17 @@ export function AuthProvider({ children }) {
 
   // Funciones de acción para los componentes:
   const login = (email, password) => {
-    dispatch({
-      type: 'LOGIN',
-      payload: { email, password }
-    });
+    const userFound = findUser(email , password);
+    if (userFound) {
+        dispatch({
+            type: 'LOGIN',
+            payload:userFound
+          });
+          return true;
+
+    }
+    return false;
+    
   };
 
   const logout = () => {
