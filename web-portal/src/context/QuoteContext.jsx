@@ -1,85 +1,71 @@
-// src/context/QuoteContext.jsx
+// src/context/QuoteContext.jsx (SOLO PARA DEBUG)
 import { createContext, useContext, useReducer } from 'react';
 
 // Persistencia
-const STORAGE_KEY = 'marketplaceQuotes';
+// const STORAGE_KEY = 'marketplaceQuotes'; // COMENTAR
 
 // Estado Inicial
 const initialState = {
-  quotes: [], // Aquí guardaremos todas las cotizaciones enviadas
+  quotes: [],
 };
 
-// Función Inicializadora (para cargar localStorage)
-const initializer = (initialValue) => {
-  try {
-    const persistedState = localStorage.getItem(STORAGE_KEY);
-    return persistedState ? JSON.parse(persistedState) : initialValue;
-  } catch (error) {
-    console.error("Error al cargar localStorage para Cotizaciones:", error);
-    return initialValue;
-  }
-};
+// Función Inicializadora (ya no se usa, no es necesario dejarla)
 
 // Función Reducer
 function quoteReducer(state, action) {
-  let newState;
-  switch (action.type) {
-    case 'ADD_QUOTE':
-      // El payload contiene el objeto completo de la cotización
-      newState = {
-        ...state,
-        // Agregamos la nueva cotización al arreglo
-        quotes: [action.payload, ...state.quotes], 
-      };
-      break;
-    
-    // Aquí podríamos tener acciones como 'EDIT_QUOTE'
+  let newState;
+  switch (action.type) {
+    case 'ADD_QUOTE':
+      newState = {
+        ...state,
+        quotes: [action.payload, ...state.quotes],
+      };
+      break;
+      default:
+        return state;
+  }
 
-    default:
-      return state;
-  }
-
-  // Guardar cambios en localStorage
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
-  return newState;
+  // Guardar cambios en localStorage
+  // localStorage.setItem(STORAGE_KEY, JSON.stringify(newState)); // COMENTAR
+  return newState;
 }
 
 // El Provider
 const QuoteContext = createContext();
 
 export function QuoteProvider({ children }) {
-  const [state, dispatch] = useReducer(quoteReducer, initialState, initializer);
+  // 💡 CAMBIO CRÍTICO: SOLO DOS ARGUMENTOS
+  const [state, dispatch] = useReducer(quoteReducer, initialState); 
 
-  // Función de acción para enviar una nueva cotización
-  const createQuote = (quoteData) => {
-    // Generamos un ID simple
-    const newQuote = {
-      id: Date.now().toString(),
-      status: 'ACTIVA', // Estado inicial
-      ...quoteData, // Contiene serviceId, price, plazo, providerId, etc.
-    };
+  // Función de acción para enviar una nueva cotización
+  const createQuote = (quoteData) => {
+    const newQuote = {
+      id: Date.now().toString(),
+      status: 'ACTIVA', 
+      ...quoteData, 
+    };
 
-    dispatch({
-      type: 'ADD_QUOTE',
-      payload: newQuote,
-    });
-    
-    return newQuote;
-  };
+    dispatch({
+      type: 'ADD_QUOTE',
+      payload: newQuote,
+    });
+    
+    return newQuote;
+  };
 
-  const contextValue = {
-    ...state, // { quotes }
-    createQuote,
-  };
+  const contextValue = {
+    ...state,
+    createQuote,
+  };
 
-  return (
-    <QuoteContext.Provider value={contextValue}>
-      {children}
-    </QuoteContext.Provider>
-  );
+  return (
+    <QuoteContext.Provider value={contextValue}>
+      {children}
+    </QuoteContext.Provider>
+  );
 }
 
 // Custom Hook
 export const useQuotes = () => {
-  return useContext(QuoteContext);
+  return useContext(QuoteContext);
 };

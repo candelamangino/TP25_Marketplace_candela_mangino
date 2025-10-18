@@ -11,6 +11,7 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import { ServiceProvider } from './context/ServiceContext.jsx';
 import CreateServicePage from './pages/CreateServicePage.jsx';
 import ServiceDetailPage from './pages/ServiceDetailPage.jsx';
+import { QuoteProvider } from './context/QuoteContext.jsx';
 
 // 1. Definimos el mapa de rutas:
 const router = createBrowserRouter([
@@ -36,10 +37,12 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <AuthProvider> 
     <ServiceProvider>
+      <QuoteProvider>
       <React.StrictMode>
         <RouterProvider router={router} />
       </React.StrictMode>
-    </ServiceProvider> 
+    </QuoteProvider>
+  </ServiceProvider> 
     
   </AuthProvider>
 );
