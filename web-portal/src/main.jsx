@@ -12,11 +12,13 @@ import { ServiceProvider } from './context/ServiceContext.jsx';
 import CreateServicePage from './pages/CreateServicePage.jsx';
 import ServiceDetailPage from './pages/ServiceDetailPage.jsx';
 import { QuoteProvider } from './context/QuoteContext.jsx';
+import { SupplyProvider } from './context/SupplyContext.jsx';
+import CreateSupplyPage from './pages/CreateSupplyPage.jsx';
 
 // 1. Definimos el mapa de rutas:
 const router = createBrowserRouter([
   {
-    path: '/', // Ruta principal
+    path: '/', // Ruta principal(el dashboard)
     element: <ProtectedRoute element={<DashboardPage />} />,
   },
   {
@@ -31,6 +33,10 @@ const router = createBrowserRouter([
     path: '/cotizar/:serviceId',
     element: <ProtectedRoute element={<ServiceDetailPage />} />,
   },
+  {
+    path:'/insumos/nuevos',
+    element:<ProtectedRoute element={<CreateSupplyPage/>}/>,
+  }
 ]);
 
 // 2. Renderizamos la aplicación usando el RouterProvider
@@ -38,9 +44,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <AuthProvider> 
     <ServiceProvider>
       <QuoteProvider>
+        <SupplyProvider>
       <React.StrictMode>
         <RouterProvider router={router} />
       </React.StrictMode>
+      </SupplyProvider>
     </QuoteProvider>
   </ServiceProvider> 
     
